@@ -18,34 +18,46 @@ const AppCont = ({ children }) => {
 const RangeSlider = ({ rangeval, setRangeval }) => {
   return (
     <div>
-      <input type="range" min="0" max="100" className="slider" defaultValue={rangeval}
+      <input type="range" min="2" max="100" className="slider" defaultValue={rangeval}
         onChange={(event) => {
           return setRangeval(event.target.value);
         }} />
-      <h4>The range value is {rangeval}</h4>
     </div>
   );
 };
 
 const App = () => {
   const [rangeval, setRangeval] = useState(10);
-  const randomData = Array.from({ length: 8 }, (_, i) => {
+  const randomData = Array.from({ length: rangeval }, (_, i) => {
     return {
     "Raoul": i+1,
     "Jacques": 2 * (1+i)
     };
   })
 
+  const [chartData, setChartData] = useState(randomData);
+
+  const newRangeval = (value) => {
+    setRangeval(value);
+    const newChartData = Array.from({ length: value }, (_, i) => {
+      return {
+        "Raoul": i + 1,
+        "Jacques": 2 * (1 + i)
+      };
+    });
+    setChartData(newChartData);
+  };
+
   return (
     <>
       <AppCont >
         <h1>Hello sira</h1>
         <h2>Slider value: {rangeval}</h2>
-        <RangeSlider rangeval={rangeval} setRangeval={setRangeval} />
+        <RangeSlider rangeval={rangeval} setRangeval={newRangeval} />
       </AppCont>
       <AppCont >
         <div style={{ height: 400 }}>
-          <MyResponsiveStream data={randomData} />
+          <MyResponsiveStream data={chartData} />
         </div>
       </AppCont>
     </>
