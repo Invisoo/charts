@@ -19,30 +19,39 @@ const RangeSlider = ({ rangeval, setRangeval, max, min }) => {
 const buildInterest = (duration, intVal, risk) => {
   const arr = new Array(duration + 1);
   for (var i = 0; i < duration + 1; i++) {
-    arr[i] = interests(i, intVal);
+    arr[i] = interests(i, translateInvestment(intVal), risk);
   }
   return arr;
 }
 
-const interests = (i, base) => {
+const interests = (i, base, risk) => {
+  const erp = 0.05;
+  const fee = 0.016;
+  const clientRisk = erp / (5 - risk); // Assume "no risk return" of 0.
+  const withFeePower = 1 + clientRisk - fee;
+  const withoutFeePower = 1 + fee;
+
   if (i === 0) {
     return {
       "Avec Frais": base,
-      "Sans Frais": 0.001
+      "Sans Frais": 0.1
     }
   }
+
   return {
-    "Avec Frais": base * Math.pow(1.04, i),
-    "Sans Frais": base * (Math.pow(1.013, i) - 1)
+    "Avec Frais": base * Math.pow(withFeePower, i),
+    "Sans Frais": base * (Math.pow(withoutFeePower, i) - 1)
   };
 }
 
+const translateInvestment = (x) => x * 500
+
 const App = () => {
-  const [duration, setDuration] = useState(10);
-  const [invVal, setInv] = useState(1000);
+  const [duration, setDuration] = useState(20);
+  const [invVal, setInv] = useState(1);
   const [risk, setRisk] = useState(3);
 
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState(null);
   useEffect(() => setChartData(buildInterest(duration, invVal, risk)), [duration, invVal, risk])
 
   return (
@@ -50,14 +59,15 @@ const App = () => {
       <Row><Col>
         <h1>Hello sir!</h1>
       </Col></Row>
+
       <Row>
         <Col>
           <h4>Horizon d'Investissement: {duration}</h4>
           <RangeSlider rangeval={duration} setRangeval={setDuration} min={2} max={50} />
         </Col>
         <Col>
-          <h4>Montant Investi: {invVal}</h4>
-          <RangeSlider rangeval={invVal} setRangeval={setInv} min={1000} max={100000} />
+          <h4>Montant Investi: {translateInvestment(invVal)}</h4>
+          <RangeSlider rangeval={invVal} setRangeval={setInv} min={1} max={200} />
         </Col>
         <Col>
           <h4>Risk: {risk}</h4>
@@ -93,7 +103,7 @@ const MyResponsiveStream = ({ data }) => (
       }}
       axisLeft={{ orient: 'left', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: -40 }}
       offsetType="diverging"
-      colors={{ scheme: 'purples' }}
+      colors={{ scheme: 'set3' }}
       fillOpacity={0.85}
       borderColor={{ theme: 'background' }}
       legends={[
