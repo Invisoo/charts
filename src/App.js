@@ -27,20 +27,33 @@ const RangeSlider = ({ rangeval, setRangeval, max, min }) => {
 const buildInterest = (duration, intVal, risk) => {
   const wFeeArr = new Array(duration + 1);
   const woFeeArr = new Array(duration + 1);
+  const livretAArr = new Array(duration + 1);
+  const fondEArr = new Array(duration + 1);
+
   for (var i = 0; i < duration + 1; i++) {
     const values = interests(i, translateInvestment(intVal), risk);
     wFeeArr[i] = {x: i, y: values.wFee};
     woFeeArr[i] = {x: i, y: values.woFee};
+    livretAArr[i] = {x: i, y: values.livretA};
+    fondEArr[i] = {x: i, y: values.fondEuro};
   }
 
   const ret = [
     {
-      id: "Avec Frais",
+      id: "Porteufeuille Avec Frais",
       data: wFeeArr
     },
     {
-      id: "Sans Frais",
+      id: "Portefeuille Sans Frais",
       data: woFeeArr
+    },
+    {
+      id: "Livret A",
+      data: livretAArr
+    },
+    {
+      id: "Fond Euro",
+      data: fondEArr
     }
   ];
   console.log(ret);
@@ -63,7 +76,9 @@ const interests = (i, base, risk) => {
 
   return {
     wFee: base * Math.pow(withFeePower, i),
-    woFee: base * Math.pow(withoutFeePower, i)
+    woFee: base * Math.pow(withoutFeePower, i),
+    livretA: base * Math.pow(1.005, i),
+    fondEuro: base * Math.pow(1.0075, i)
   };
 }
 
@@ -170,7 +185,7 @@ const MyResponsiveLine = ({ data }) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'Valeur',
+          legend: 'Valeur (en €)',
           legendOffset: -60,
           legendPosition: 'middle'
       }}
@@ -189,16 +204,16 @@ const MyResponsiveLine = ({ data }) => {
       enableSlices="x"
       legends={[
           {
-              anchor: 'top',
-              direction: 'row',
+              anchor: 'top-left',
+              direction: 'column',
               justify: false,
-              translateX: 0,
-              translateY: -48,
+              translateX: 30,
+              translateY: 20,
               itemsSpacing: 0,
               itemDirection: 'left-to-right',
-              itemWidth: 107,
+              itemWidth: 120,
               itemHeight: 20,
-              itemOpacity: 0.75,
+              itemOpacity: 1,
               symbolSize: 14,
               symbolShape: 'circle',
               symbolBorderColor: 'rgba(0, 0, 0, .5)',
