@@ -5,10 +5,18 @@ import {ResponsiveLine} from '@nivo/line';
 
 import './App.css';
 
+const RangeTitle = ({ title, value }) => (
+  <div className="mx-3 d-flex justify-content-between">
+    <div className="h5">{title}</div>
+    <div className="h5">{value}</div>
+  </div>
+)
+
 const RangeSlider = ({ rangeval, setRangeval, max, min }) => {
   return (
-    <div>
-      <input type="range" min={min} max={max} defaultValue={rangeval}
+    <div className="mx-3 mb-3">
+      <input type="range" className="form-control-range"
+        min={min} max={max} defaultValue={rangeval}
         onChange={(event) => {
           return setRangeval(parseInt(event.target.value));
         }} />
@@ -39,6 +47,13 @@ const buildInterest = (duration, intVal, risk) => {
   return ret;
 }
 
+const RisqueNames = {
+  1: "Conservateur",
+  2: "Énergique",
+  3: "Courageux",
+  4: "Aguerri"
+}
+
 const interests = (i, base, risk) => {
   const erp = 0.05;
   const fee = 0.016;
@@ -55,30 +70,42 @@ const interests = (i, base, risk) => {
 const translateInvestment = (x) => x * 500
 
 const App = () => {
-  const [duration, setDuration] = useState(20);
+  const [duration, setDuration] = useState(15);
   const [invVal, setInv] = useState(1);
-  const [risk, setRisk] = useState(3);
+  const [risk, setRisk] = useState(4);
 
   const [chartData, setChartData] = useState(null);
-  useEffect(() => setChartData(buildInterest(duration, invVal, risk)), [duration, invVal, risk])
+  const [savedOnFees, setFeeSaving] = useState(0);
+  useEffect(() => {
+    const chartData = buildInterest(duration, invVal, risk);
+    setChartData(chartData);
+  }, [duration, invVal, risk])
 
   return (
     <section><Container className="text-center">
-      <Row><Col>
-        <h1>Hello sir!</h1>
-      </Col></Row>
+      <Row className="mb-3">
+        <Col md="2"></Col>
+        <Col>
+          <h3>
+            En investissant avec Invisoo, vous pouvez économiser
+          <span className="text-danger"> {savedOnFees} €</span> en frais
+          sur vos {translateInvestment(invVal)}€ investis !
+        </h3>
+        </Col>
+        <Col md="2"></Col>
+      </Row>
 
       <Row>
-        <Col>
-          <h4>Horizon d'Investissement: {duration}</h4>
+        <Col className="mx-3">
+          <RangeTitle title="Horizon d'Investissement" value={duration} />
           <RangeSlider rangeval={duration} setRangeval={setDuration} min={2} max={35} />
         </Col>
-        <Col>
-          <h4>Montant Investi: {translateInvestment(invVal)}</h4>
+        <Col className="mx-3">
+          <RangeTitle title="Montant Investi" value={translateInvestment(invVal)} />
           <RangeSlider rangeval={invVal} setRangeval={setInv} min={1} max={200} />
         </Col>
-        <Col>
-          <h4>Risque: {risk}</h4>
+        <Col className="mx-3">
+          <RangeTitle title="Profil" value={RisqueNames[risk]} />
           <RangeSlider rangeval={risk} setRangeval={setRisk} min={1} max={4} />
         </Col>
       </Row>
@@ -109,7 +136,7 @@ const MyResponsiveLine = ({ data }) => {
   return (
   <ResponsiveLine
       data={data}
-      margin={{ top: 50, right: 110, bottom: 50, left: 80 }}
+      margin={{ top: 50, right: 30, bottom: 50, left: 80 }}
       xScale={{ type: 'point' }}
       yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
       yFormat=" >-.2f"
