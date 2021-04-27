@@ -7,8 +7,8 @@ import './App.css';
 
 const RangeTitle = ({ title, value }) => (
   <div className="mx-3 d-flex justify-content-between">
-    <div className="h5">{title}</div>
-    <div className="h5">{value}</div>
+    <div className="h6">{title}</div>
+    <div className="h6">{value}</div>
   </div>
 )
 
@@ -79,29 +79,30 @@ const App = () => {
   useEffect(() => {
     const chartData = buildInterest(duration, invVal, risk);
     setChartData(chartData);
+    setFeeSaving(computeFeeSavings(chartData));
   }, [duration, invVal, risk])
 
   return (
     <section><Container className="text-center">
-      <Row className="mb-3">
+      <Row className="mb-4">
         <Col md="2"></Col>
         <Col>
           <h3>
             En investissant avec Invisoo, vous pouvez économiser
-          <span className="text-danger"> {savedOnFees} €</span> en frais
-          sur vos {translateInvestment(invVal)}€ investis !
-        </h3>
+            <span className="text-danger"> {savedOnFees}€</span> en frais
+            sur vos {translateInvestment(invVal)}€ investis !
+          </h3>
         </Col>
         <Col md="2"></Col>
       </Row>
 
       <Row>
         <Col className="mx-3">
-          <RangeTitle title="Horizon d'Investissement" value={duration} />
+          <RangeTitle title="Horizon d'Investissement" value={`${duration} an`} />
           <RangeSlider rangeval={duration} setRangeval={setDuration} min={2} max={35} />
         </Col>
         <Col className="mx-3">
-          <RangeTitle title="Montant Investi" value={translateInvestment(invVal)} />
+          <RangeTitle title="Montant Investi" value={`${translateInvestment(invVal)}€`} />
           <RangeSlider rangeval={invVal} setRangeval={setInv} min={1} max={200} />
         </Col>
         <Col className="mx-3">
@@ -117,6 +118,17 @@ const App = () => {
       </Col></Row>
     </Container></section>
   );
+}
+
+const computeFeeSavings = (data) => {
+  if (!Array.isArray(data) || data.length < 2) {
+    return 0;
+  }
+
+  const wFeeData = data[0].data;
+  const woFeeData = data[1].data;
+  const savings = woFeeData[woFeeData.length - 1].y - wFeeData[wFeeData.length - 1].y;
+  return Math.round(savings + 0.8);
 }
 
 const getDataMin = (data) => {
