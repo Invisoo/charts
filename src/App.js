@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Container, Row, Col} from 'reactstrap';
 
-import {ResponsiveStream} from '@nivo/stream';
 import {ResponsiveLine} from '@nivo/line';
 
 import './App.css';
@@ -18,11 +17,26 @@ const RangeSlider = ({ rangeval, setRangeval, max, min }) => {
 };
 
 const buildInterest = (duration, intVal, risk) => {
-  const arr = new Array(duration + 1);
+  const wFeeArr = new Array(duration + 1);
+  const woFeeArr = new Array(duration + 1);
   for (var i = 0; i < duration + 1; i++) {
-    arr[i] = interests(i, translateInvestment(intVal), risk);
+    const values = interests(i, translateInvestment(intVal), risk);
+    wFeeArr[i] = {x: i, y: values.wFee};
+    woFeeArr[i] = {x: i, y: values.woFee};
   }
-  return arr;
+
+  const ret = [
+    {
+      id: "Avec Frais",
+      data: wFeeArr
+    },
+    {
+      id: "Sans Frais",
+      data: woFeeArr
+    }
+  ];
+  console.log(ret);
+  return ret;
 }
 
 const interests = (i, base, risk) => {
@@ -30,18 +44,11 @@ const interests = (i, base, risk) => {
   const fee = 0.016;
   const clientRisk = erp / (5 - risk); // Assume "no risk return" of 0.
   const withFeePower = 1 + clientRisk - fee;
-  const withoutFeePower = 1 + fee;
-
-  if (i === 0) {
-    return {
-      "Avec Frais": base,
-      "Sans Frais": 0.1
-    }
-  }
+  const withoutFeePower = 1 + clientRisk;
 
   return {
-    "Avec Frais": base * Math.pow(withFeePower, i),
-    "Sans Frais": base * (Math.pow(withoutFeePower, i) - 1)
+    wFee: base * Math.pow(withFeePower, i),
+    woFee: base * Math.pow(withoutFeePower, i)
   };
 }
 
@@ -64,88 +71,58 @@ const App = () => {
       <Row>
         <Col>
           <h4>Horizon d'Investissement: {duration}</h4>
-          <RangeSlider rangeval={duration} setRangeval={setDuration} min={2} max={50} />
+          <RangeSlider rangeval={duration} setRangeval={setDuration} min={2} max={35} />
         </Col>
         <Col>
           <h4>Montant Investi: {translateInvestment(invVal)}</h4>
           <RangeSlider rangeval={invVal} setRangeval={setInv} min={1} max={200} />
         </Col>
         <Col>
-          <h4>Risk: {risk}</h4>
+          <h4>Risque: {risk}</h4>
           <RangeSlider rangeval={risk} setRangeval={setRisk} min={1} max={4} />
         </Col>
       </Row>
 
       <Row><Col>
         <div style={{ height: 400 }}>
-          <MyResponsiveStream data={chartData} />
+          <MyResponsiveLine data={chartData} />
         </div>
       </Col></Row>
     </Container></section>
   );
 }
 
-const MyResponsiveStream = ({ data }) => (
-  <ResponsiveStream
-      data={data}
-      keys={[ 'Avec Frais', 'Sans Frais' ]}
-      enableGridX={false}
-      enableGridY={true}
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-      axisTop={null}
-      axisRight={null}
-      axisBottom={{
-          orient: 'bottom',
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: '',
-          legendOffset: 36
-      }}
-      axisLeft={{ orient: 'left', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: '', legendOffset: -40 }}
-      offsetType="diverging"
-      colors={{ scheme: 'set3' }}
-      fillOpacity={0.85}
-      borderColor={{ theme: 'background' }}
-      legends={[
-          {
-              anchor: 'top',
-              direction: 'row',
-              translateY: -30,
-              itemWidth: 80,
-              itemHeight: 20,
-              itemTextColor: '#999999',
-              symbolSize: 12,
-              symbolShape: 'square',
-              effects: [
-                  {
-                      on: 'hover',
-                      style: {
-                          itemTextColor: '#000000'
-                      }
-                  }
-              ]
-          }
-      ]}
-  />
-)
+const getDataMin = (data) => {
+  if (!Array.isArray(data) || data.length < 2) {
+    return 0;
+  }
 
-const MyResponsiveLine = ({ data }) => (
+  const wFeeData = data[0].data;
+  const yAxis = Array.from(wFeeData, (v, _) => v.y);
+  const minWFee = Math.min.apply(null, yAxis);
+  return minWFee;
+}
+
+const MyResponsiveLine = ({ data }) => {
+  const areaMin = getDataMin(data);
+
+  return (
   <ResponsiveLine
       data={data}
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+      margin={{ top: 50, right: 110, bottom: 50, left: 80 }}
       xScale={{ type: 'point' }}
-      yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
+      yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false, reverse: false }}
       yFormat=" >-.2f"
       curve="catmullRom"
       axisTop={null}
       axisRight={null}
       axisBottom={{
           orient: 'bottom',
+          tickMin: 0,
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'transportation',
+          legend: 'Année',
           legendOffset: 36,
           legendPosition: 'middle'
       }}
@@ -154,12 +131,13 @@ const MyResponsiveLine = ({ data }) => (
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'count',
-          legendOffset: -40,
+          legend: 'Valeur',
+          legendOffset: -60,
           legendPosition: 'middle'
       }}
+      colors={{ scheme: 'set3' }}
       enableGridX={false}
-      lineWidth={6}
+      lineWidth={5}
       enablePoints={false}
       pointSize={10}
       pointColor={{ theme: 'background' }}
@@ -167,12 +145,13 @@ const MyResponsiveLine = ({ data }) => (
       pointBorderColor={{ from: 'serieColor' }}
       pointLabelYOffset={-12}
       enableArea={true}
-      areaOpacity={0.1}
+      areaBaselineValue={areaMin}
+      areaOpacity={0.2}
       enableSlices="x"
       legends={[
           {
               anchor: 'top',
-              direction: 'column',
+              direction: 'row',
               justify: false,
               translateX: 0,
               translateY: -48,
@@ -196,6 +175,7 @@ const MyResponsiveLine = ({ data }) => (
           }
       ]}
   />
-)
+  );
+}
 
 export default App;
