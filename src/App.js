@@ -1,7 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {Container, Row, Col} from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col } from 'reactstrap';
 
-import {ResponsiveLine} from '@nivo/line';
+import { ResponsiveLine } from '@nivo/line';
+import InputRange from "react-input-range";
+import 'react-input-range/lib/css/index.css';
 
 import './App.css';
 
@@ -15,11 +17,13 @@ const RangeTitle = ({ title, value }) => (
 const RangeSlider = ({ rangeval, setRangeval, max, min }) => {
   return (
     <div className="mx-3 mb-3">
-      <input type="range" className="form-control-range"
+      {/*<input type="range" className="form-control-range"
         min={min} max={max} defaultValue={rangeval}
         onChange={(event) => {
           return setRangeval(parseInt(event.target.value));
-        }} />
+        }} />*/}
+      <InputRange minValue={min} maxValue={max} step={1} value={rangeval}
+       formatLabel={value => ``} onChange={(val) => setRangeval(val)} />
     </div>
   );
 };
