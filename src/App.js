@@ -15,13 +15,9 @@ const RangeTitle = ({ title, value }) => (
 )
 
 const RangeSlider = ({ rangeval, setRangeval, max, min }) => {
+  // Learned to use `InputRange` from https://codesandbox.io/s/n4opyj922l?file=/main/navigation/Navigation.js
   return (
     <div className="mx-3 mb-3">
-      {/*<input type="range" className="form-control-range"
-        min={min} max={max} defaultValue={rangeval}
-        onChange={(event) => {
-          return setRangeval(parseInt(event.target.value));
-        }} />*/}
       <InputRange minValue={min} maxValue={max} step={1} value={rangeval}
        formatLabel={value => ``} onChange={(val) => setRangeval(val)} />
     </div>
@@ -44,11 +40,11 @@ const buildInterest = (duration, intVal, risk) => {
 
   const ret = [
     {
-      id: "Porteufeuille Avec Frais",
+      id: "Porteufeuille avec frais",
       data: wFeeArr
     },
     {
-      id: "Portefeuille Sans Frais",
+      id: "Portefeuille Invisoo (sans frais)",
       data: woFeeArr
     },
     {
@@ -107,7 +103,7 @@ const App = () => {
         <Col md="2"></Col>
         <Col>
           <h3>
-            En investissant avec Invisoo, vous pouvez économiser
+            En faisant le bon choix, vous pouvez économiser
             <span className="text-danger"> {savedOnFees}€</span> en frais
             sur vos {translateInvestment(invVal)}€ investis !
           </h3>
