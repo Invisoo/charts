@@ -90,11 +90,11 @@ const App = () => {
   const [risk, setRisk] = useState(4);
 
   const [chartData, setChartData] = useState(null);
-  const [savedOnFees, setFeeSaving] = useState(0);
+  const [returns, setReturns] = useState(0);
   useEffect(() => {
     const chartData = buildInterest(duration, invVal, risk);
     setChartData(chartData);
-    setFeeSaving(computeFeeSavings(chartData));
+    setReturns(computeReturns(chartData));
   }, [duration, invVal, risk])
 
   return (
@@ -104,7 +104,7 @@ const App = () => {
         <Col>
           <h3>
             Avec Invisoo, investissez {translateInvestment(invVal)}€ et gagnez
-            <span className="text-danger"> {savedOnFees}€ </span>!
+            <span className="text-danger"> {returns}€ </span>!
           </h3>
         </Col>
         <Col md="2"></Col>
@@ -134,14 +134,13 @@ const App = () => {
   );
 }
 
-const computeFeeSavings = (data) => {
+const computeReturns = (data) => {
   if (!Array.isArray(data) || data.length < 2) {
     return 0;
   }
 
-  const wFeeData = data[0].data;
   const woFeeData = data[1].data;
-  const savings = woFeeData[woFeeData.length - 1].y - wFeeData[wFeeData.length - 1].y;
+  const savings = woFeeData[woFeeData.length - 1].y - woFeeData[0].y;
   return Math.round(savings + 0.8);
 }
 
