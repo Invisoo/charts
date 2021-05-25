@@ -86,7 +86,7 @@ const translateInvestment = (x) => x * 500
 
 const App = () => {
   const [duration, setDuration] = useState(15);
-  const [invVal, setInv] = useState(1);
+  const [invVal, setInv] = useState(2);
   const [risk, setRisk] = useState(4);
 
   const [chartData, setChartData] = useState(null);
@@ -103,9 +103,8 @@ const App = () => {
         <Col md="2"></Col>
         <Col>
           <h3>
-            En faisant le bon choix, vous pouvez économiser
-            <span className="text-danger"> {savedOnFees}€</span> en frais
-            sur vos {translateInvestment(invVal)}€ investis !
+            Avec Invisoo, investissez {translateInvestment(invVal)}€ et gagnez
+            <span className="text-danger"> {savedOnFees}€ </span>!
           </h3>
         </Col>
         <Col md="2"></Col>
@@ -114,7 +113,7 @@ const App = () => {
       <Row>
         <Col className="mx-3">
           <RangeTitle title="Horizon d'Investissement" value={`${duration} an`} />
-          <RangeSlider rangeval={duration} setRangeval={setDuration} min={2} max={35} />
+          <RangeSlider rangeval={duration} setRangeval={setDuration} min={1} max={35} />
         </Col>
         <Col className="mx-3">
           <RangeTitle title="Montant Investi" value={`${translateInvestment(invVal)}€`} />
