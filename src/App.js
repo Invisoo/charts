@@ -69,8 +69,12 @@ const RisqueNames = {
 
 const interests = (i, base, risk) => {
   const erp = 0.05;
+  const safety = 0.005;
   const fee = 0.016;
-  const clientRisk = erp / (5 - risk); // Assume "no risk return" of 0.
+
+  const riskProportion = 0.2 * risk;
+  const clientRisk = erp * riskProportion + safety * (1 - riskProportion);
+
   const withFeePower = 1 + clientRisk - fee;
   const withoutFeePower = 1 + clientRisk;
 
