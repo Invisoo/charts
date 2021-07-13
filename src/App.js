@@ -13,6 +13,7 @@ import './App.css';
 
 import InterestSimulator from './pages/InterestSimulator.js';
 import RetirementCalculator from './pages/RetirementCalculator.js';
+import AmortizationCalculator from './pages/AmortizationCard.js';
 
 const App = () => (
   <Router>
@@ -21,6 +22,9 @@ const App = () => (
     <Switch>
       <Route path="/" exact>
         <InterestSimulator />
+      </Route>
+      <Route path="/amortization">
+        <AmortizationCalculator />
       </Route>
       <Route path="/retirement_calc">
         <RetirementCalculator />
