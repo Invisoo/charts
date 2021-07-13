@@ -32,7 +32,7 @@ code {
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: 0 solid transparent;
+  border: 1px solid rgba(0,0,0,.125);
   border-radius: 0.25rem; }
   .card > hr {
     margin-right: 0;
@@ -137,4 +137,3 @@ code {
       margin-right: 12px;
       margin-bottom: 0;
       margin-left: 12px; } }
-

@@ -5,11 +5,9 @@ const AmortizationCalculator = () => {
 	return (
 		<Container>
 			<Row>
-				<Col md="3"></Col>
-				<Col>
+				<Col style={{maxWidth: "500px", margin: "0 auto"}}>
 					<AmortizationCard />
 				</Col>
-				<Col md="3"></Col>
 			</Row>
 		</Container>
 	);
