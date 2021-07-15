@@ -7,7 +7,7 @@ const RetirementCalculator = () => {
 	return (
 		<Container>
 			<Row>
-				<Col style={{ maxWidth: "700px", margin: "0 auto" }}>
+				<Col style={{ maxWidth: "800px", margin: "0 auto" }} >
 					<RetCalcCard />
 				</Col>
 			</Row>
@@ -23,7 +23,7 @@ const RetCalcCard = () => {
 		statePension: 1500,
 		wishedPension: 3000,
 	});
-	const [chartData, setChartData] = useState()
+	const [chartData, setChartData] = useState([]);
 
 	const [neededSavings, setSavings] = useState(0);
 	useEffect(() => {
@@ -35,7 +35,7 @@ const RetCalcCard = () => {
 
 	return (
 		<>
-			<Card className="my-2"><CardBody className="text-justify">
+			<Card className="my-2 px-4"><CardBody className="text-justify">
 				<p style={{ lineHeight: "2" }}>
 					J'ai&nbsp;
 					<input
@@ -108,7 +108,7 @@ const RetCalcCard = () => {
 
 			<h1 className="text-center">⬇️</h1>
 
-			<Card className="my-2"><CardBody className="text-justify">
+			<Card className="my-2 px-4"><CardBody className="text-justify">
 				<h1>Hello</h1>
 				<p>Vous devez economiser <u>${neededSavings}</u> par mois.</p>
 				<div style={{ height: 400 }}>
@@ -160,10 +160,13 @@ const computeRetirementChart = (calcState, savingTarget) => {
 	}]
 }
 
-const MyResponsiveLine = ({ chartData /* see data tab */ }) => (
+const MyResponsiveLine = ({ chartData /* see data tab */ }) => {
+	const areaMin = chartData.length > 0 ? chartData[0].data[0].y : 0;
+
+	return (
 	<ResponsiveLine
 			data={chartData}
-      areaBaselineValue={chartData[0].y}
+      areaBaselineValue={areaMin}
 			margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
 			xScale={{ type: 'point' }}
 			yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
@@ -198,6 +201,7 @@ const MyResponsiveLine = ({ chartData /* see data tab */ }) => (
 			enableArea={true}
 			useMesh={true}
 	/>
-)
+	);
+}
 
 export default RetirementCalculator;
