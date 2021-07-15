@@ -23,6 +23,9 @@ const App = () => (
       <Route path="/" exact>
         <InterestSimulator />
       </Route>
+      <Route path="/interests">
+        <InterestSimulator />
+      </Route>
       <Route path="/amortization">
         <AmortizationCalculator />
       </Route>
