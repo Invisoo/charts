@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Col, Row, Card, CardBody } from 'reactstrap';
 
 const RetirementCalculator = () => {
@@ -22,9 +22,13 @@ const RetCalcCard = () => {
 		wishedPension: 3000,
 	});
 
+	const [neededSavings, setSavings] = useState(0);
+	useEffect(() => {setSavings(computeNeededSavings(calcState))}, [calcState]);
+
 	return (
+		<>
 		<Card className="my-2"><CardBody className="text-justify">
-			<p style={{ lineHeight: "2.8" }}>
+			<p style={{ lineHeight: "2" }}>
 				J'ai&nbsp;
 				<input
 					style={{ width: "50px", height: "35px" }}
@@ -56,7 +60,9 @@ const RetCalcCard = () => {
 						...prevState,
 						savings: Number(e.target.value)
 					}))}}
-				/>.
+				/> pour ma retraite. (Note: exclus votre réserve de sécurité.)
+			</p>
+			<p>
 				Je pense obtenir
 				$<input
 					style={{ width: "80px", height: "35px" }}
@@ -81,7 +87,34 @@ const RetCalcCard = () => {
 				/> par mois.
 			</p>
 		</CardBody></Card>
+
+		<h1 className="text-center">⬇️</h1>
+
+		<Card className="my-2"><CardBody className="text-justify">
+			<h1>Hello</h1>
+			<p>Vous devez economiser <u>${neededSavings}</u> par mois.</p>
+		</CardBody></Card>
+		</>
 	);
+}
+
+const computeNeededSavings = (calcState) => {
+	// Constants
+	const i_r = 0.035; // 4% rule, updated in the new environment.
+	const i_s = 0.07; // 7% is discount rate in EM.
+
+	// Basic variables
+	const retirementFromInvestment = calcState.wishedPension - calcState.statePension;
+	const savingDuration = calcState.retirementAge - calcState.currentAge;
+	const fundAtRetirement = retirementFromInvestment * 12 / i_r;
+
+	// Computing needed contribution per month
+	const a_n = Math.pow(1+i_s, savingDuration);
+	const yearlyCont = (fundAtRetirement - a_n * calcState.savings) *
+		i_s / (a_n -1);
+	const monthlyContribution = .5 + yearlyCont / 12;
+
+	return monthlyContribution.toFixed();
 }
 
 export default RetirementCalculator;
