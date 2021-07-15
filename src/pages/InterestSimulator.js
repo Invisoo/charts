@@ -54,7 +54,6 @@ const buildInterest = (duration, intVal, risk) => {
       data: fondEArr
     }
   ];
-  console.log(ret);
   return ret;
 }
 
