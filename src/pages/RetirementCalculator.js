@@ -36,6 +36,7 @@ const RetCalcCard = () => {
 	return (
 		<>
 			<Card className="my-2 px-4"><CardBody className="text-justify">
+				<h2 className="mb-4">🚀 Votre point de Départ</h2>
 				<p style={{ lineHeight: "2" }}>
 					J'ai&nbsp;
 					<input
@@ -109,9 +110,10 @@ const RetCalcCard = () => {
 			<h1 className="text-center">⬇️</h1>
 
 			<Card className="my-2 px-4"><CardBody className="text-justify">
-				<h1>Hello</h1>
-				<p>Vous devez economiser <u>${neededSavings}</u> par mois.</p>
-				<div style={{ height: 400 }}>
+				<h2 className="mb-4">🏎️ Route de la Retraite</h2>
+				<p>Vous devez économiser <strong className="text-danger"
+					style={{fontSize: '1.3rem'}}>${neededSavings}</strong> par mois.</p>
+				<div style={{ height: 300 }}>
 					<MyResponsiveLine chartData={chartData} />
 				</div>
 			</CardBody></Card>
@@ -140,16 +142,19 @@ const computeNeededSavings = (calcState) => {
 
 const computeRetirementChart = (calcState, savingTarget) => {
 	const i_s = 0.07; // 7% is discount rate in EM.
+	const i_r = 0.03; // Invest safer at retirement.
 	const duration = 100 - calcState.currentAge + 1;
 	const savingsArray = new Array(duration);
+	const retirementFromInvestment = calcState.wishedPension - calcState.statePension;
 
 	let savings = calcState.savings;
-	savingsArray[0] = { x: 0, y: savings};
+	savingsArray[0] = { x: calcState.currentAge, y: savings};
 	for (var i = 1; i < duration; i++) {
 		if (i <= calcState.retirementAge - calcState.currentAge) {
 		  savings = savings * (1 + i_s) + savingTarget * 12;
 		} else {
-			savings = savings - 10000;
+			savings = savings - retirementFromInvestment * 12;
+			savings = savings * (1 + i_r);
 		}
 		savingsArray[i] = { x: i + calcState.currentAge, y: savings}
 	}
@@ -163,14 +168,25 @@ const computeRetirementChart = (calcState, savingTarget) => {
 const MyResponsiveLine = ({ chartData /* see data tab */ }) => {
 	const areaMin = chartData.length > 0 ? chartData[0].data[0].y : 0;
 
+	var tickValues = []
+	if (chartData.length > 0) {
+		for (let i = 0; i < chartData[0].data.length; i++) {
+			const point = chartData[0].data[i];
+			if (point.x % 5 === 0) {
+				tickValues.push(point.x);
+			}
+		}
+	}
+
 	return (
 	<ResponsiveLine
 			data={chartData}
       areaBaselineValue={areaMin}
-			margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+			margin={{ top: 50, right: 30, bottom: 50, left: 90 }}
 			xScale={{ type: 'point' }}
 			yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
 			curve="catmullRom"
+			isInteractive={false}
 			axisTop={null}
 			axisRight={null}
 			axisBottom={{
@@ -178,7 +194,8 @@ const MyResponsiveLine = ({ chartData /* see data tab */ }) => {
 					tickSize: 5,
 					tickPadding: 5,
 					tickRotation: 0,
-					legend: 'transportation',
+					legend: 'Âge',
+					tickValues: tickValues,
 					legendOffset: 36,
 					legendPosition: 'middle'
 			}}
@@ -187,9 +204,12 @@ const MyResponsiveLine = ({ chartData /* see data tab */ }) => {
 					tickSize: 5,
 					tickPadding: 5,
 					tickRotation: 0,
-					legend: 'count',
-					legendOffset: -40,
-					legendPosition: 'middle'
+					legend: 'Épargne',
+					legendOffset: -80,
+					legendPosition: 'middle',
+					format: function(value) {
+						return `$${value/1000}'000`;
+					}
 			}}
 			enableGridX={false}
 			enablePoints={false}
@@ -200,6 +220,7 @@ const MyResponsiveLine = ({ chartData /* see data tab */ }) => {
 			pointLabelYOffset={-12}
 			enableArea={true}
 			useMesh={true}
+			theme={{axis: {legend: {text: {fontSize: '16px'} } } }}
 	/>
 	);
 }
