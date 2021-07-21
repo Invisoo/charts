@@ -26,7 +26,7 @@ const AmortizationCard = () => {
 	return (
 		<Card className="my-2"><CardBody className="text-center">
 			<p>
-				Je vais depenser
+				Je vais dépenser
 				$<input
 					style={{ width: "75px" }}
 					type="number" min="0" step="1"
