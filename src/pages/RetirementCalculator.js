@@ -109,10 +109,12 @@ const RetCalcCard = () => {
 
 			<h1 className="text-center">⬇️</h1>
 
-			<Card className="my-2 px-4"><CardBody className="text-justify">
-				<h2 className="mb-4">🏎️ Route de la Retraite</h2>
-				<p>Vous devez économiser <strong className="text-danger"
-					style={{fontSize: '1.3rem'}}>${neededSavings}</strong> par mois.</p>
+			<Card className="my-2 px-2"><CardBody className="text-justify">
+				<div className="px-3">
+					<h2 className="mb-4">🏎️ Route de la Retraite</h2>
+					<p>Vous devez économiser <strong className="text-danger"
+						style={{fontSize: '1.3rem'}}>${neededSavings}</strong> par mois.</p>
+				</div>
 				<div style={{ height: 300 }}>
 					<MyResponsiveLine chartData={chartData} />
 				</div>
@@ -182,7 +184,7 @@ const MyResponsiveLine = ({ chartData /* see data tab */ }) => {
 	<ResponsiveLine
 			data={chartData}
       areaBaselineValue={areaMin}
-			margin={{ top: 50, right: 30, bottom: 50, left: 90 }}
+			margin={{ top: 50, right: 0, bottom: 50, left: 90 }}
 			xScale={{ type: 'point' }}
 			yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
 			curve="catmullRom"
