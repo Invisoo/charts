@@ -78,7 +78,7 @@ const ProcrastinationCard = () => {
 			<div class="help-tip">
 				<p>
 					Ce calculateur suppose que vous investissez 20% de votre salaire avec
-					un rendement de 7%.
+					un rendement annuel de 7%.
 				</p>
 			</div>
 		</CardBody></Card>
