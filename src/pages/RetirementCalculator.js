@@ -92,7 +92,8 @@ const RetCalcCard = () => {
 					/> par mois de l'État.
 				</p>
 				<p>
-					Au total, je voudrais avoir une pension de retraite de
+					Au total, je voudrais avoir une pension de retraite de&nbsp;
+					<span style={{whiteSpace: 'nowrap'}}>
 					$<input
 						style={{ width: "80px", height: "35px" }}
 						type="number" min="0" step="50"
@@ -103,7 +104,7 @@ const RetCalcCard = () => {
 								wishedPension: Number(e.target.value)
 							}))
 						}}
-					/> par mois.
+					/></span> par mois.
 				</p>
 			</CardBody></Card>
 
@@ -184,7 +185,7 @@ const MyResponsiveLine = ({ chartData /* see data tab */ }) => {
 	<ResponsiveLine
 			data={chartData}
       areaBaselineValue={areaMin}
-			margin={{ top: 50, right: 0, bottom: 50, left: 90 }}
+			margin={{ top: 50, right: 10, bottom: 50, left: 90 }}
 			xScale={{ type: 'point' }}
 			yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
 			curve="catmullRom"
