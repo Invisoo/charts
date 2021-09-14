@@ -42,7 +42,7 @@ const SSCard = () => {
 				/> ans. Je gagne
 				$<input
 					style={{ width: "75px", height: "30px" }}
-					type="number" min="0" step="100"
+					type="number" min="0" step="500"
 					value={salary.salary}
 					onChange={(e) => setSalary(prev => ({
 						...prev,
@@ -70,7 +70,7 @@ const SSCard = () => {
 			</h2>
 
 			<p>
-				🔼 C'est la pension que vous versera la Social Security américaine.
+				🔼 C'est la pension que vous versera la Social Security américaine tous les ans.
 			</p>
 
 			<div className="help-tip">
@@ -87,7 +87,7 @@ const computePension = (salary) => {
 	const aime = computeAIME(salary);
 	console.log(`AIME: ${aime}`);
 
-	const binnedAIME = computeBins(aime);
+	const binnedAIME = 12 * computeBins(aime);
 
 	return binnedAIME.toFixed();
 }
