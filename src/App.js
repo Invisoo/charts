@@ -15,6 +15,7 @@ import InterestSimulator from './pages/InterestSimulator.js';
 import RetirementCalculator from './pages/RetirementCalculator.js';
 import AmortizationCalculator from './pages/AmortizationCard.js';
 import Procrastination from './pages/Procrastination.js';
+import SocialSecurity from './pages/SocialSecurity.js';
 
 const App = () => (
   <Router>
@@ -35,6 +36,9 @@ const App = () => (
       </Route>
       <Route path="/procrastination">
         <Procrastination />
+      </Route>
+      <Route path="/ssa">
+        <SocialSecurity />
       </Route>
       <Route path="/">
         <Page404 />

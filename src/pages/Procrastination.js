@@ -75,7 +75,7 @@ const ProcrastinationCard = () => {
 				☝️ C'est ce que vous <strong>perdez chaque mois</strong> que vous n’investissez pas 📉
 			</p>
 
-			<div class="help-tip">
+			<div className="help-tip">
 				<p>
 					Ce calculateur suppose que vous investissez 20% de votre salaire avec
 					un rendement annuel de 7%.
